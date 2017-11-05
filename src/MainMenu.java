@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,8 +22,9 @@ import javax.swing.KeyStroke;
 public class MainMenu implements ActionListener{
 	
 	JFileChooser jfc;
-	
+	private JButton[][] _questions; 
 	public MainMenu(){
+	_questions = new JButton[5][5];
 	// Create a frame
     JFrame jfrm = new JFrame("A.S.I.A Jeopardy");
     //FIle chooser
@@ -33,7 +35,7 @@ public class MainMenu implements ActionListener{
     jfrm.setSize(1650, 1080);
     jfrm.setLocationRelativeTo(null);
     jfrm.setLayout(new FlowLayout());
-
+    
 	//MenuBar and choices and declaring everything
 	JMenuBar menuBar = new JMenuBar();
     JMenu FileMenu = new JMenu("File");
@@ -88,8 +90,11 @@ protected void OpenEvent()
 		try
 		{			
 			Scanner data = new Scanner(new FileReader(jfc.getSelectedFile()));
-			while(data.hasNextLine() )
-			{
+			for(int i=0;i<5;i++){
+				for(int j=0;j<5;j++){
+				_questions[i][j] = new JButton(data.next());
+				_questions[i][j].addActionListener(this);
+				}
 			}
 			data.close();
 		}
