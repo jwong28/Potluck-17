@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Model {
 	private ArrayList<Team> _teams;
@@ -19,6 +20,12 @@ public class Model {
 	
 	public ArrayList<Questions> getQuestions(){
 		return _questions;
+	}
+	
+	public void addJeopardyQuestions(String s){
+		Random r = new Random();
+		int x = r.nextInt(_questions.size());
+		_questions.get(x).Jeopardy(s);
 	}
 	
 	public ArrayList<Team> getTeams(){
