@@ -99,7 +99,7 @@ import javax.swing.JMenu;
 			for(int j=0;j<5;j++){
 			_questions[i][j] = new JButton("$"+(i+1)+"00");
 			_questions[i][j].addActionListener(this);
-			_model.getQuestions().add(data.nextLine());
+			_model.getQuestions().add(new Questions(data.nextLine()));
 			_boardPanel.add(_questions[i][j]);
 			}
 		}
