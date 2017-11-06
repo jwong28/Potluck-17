@@ -1,10 +1,9 @@
 
 	import java.awt.BorderLayout;
-import java.awt.Dimension; 
+	import java.awt.Dimension; 
 	import java.awt.Event;
-	import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
+	import java.awt.GridLayout;
+	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.awt.event.KeyEvent;
 	import java.io.FileNotFoundException;
@@ -15,8 +14,8 @@ import java.awt.event.ActionEvent;
 	import javax.swing.JButton;
 	import javax.swing.JFileChooser;
 	import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
+	import javax.swing.JLabel;
+	import javax.swing.JMenu;
 	import javax.swing.JMenuBar;
 	import javax.swing.JMenuItem;
 	import javax.swing.JOptionPane;
@@ -31,6 +30,7 @@ import javax.swing.JMenu;
 		private JPanel _boardPanel;
 		private JFrame jfrm;
 		private Model _model;
+		
 		public MainMenu(){
 		_model = new Model();
 		_questions = new JButton[5][5];
@@ -103,6 +103,7 @@ import javax.swing.JMenu;
 			_boardPanel.add(_questions[i][j]);
 			}
 		}
+//		_model.addJeopardyQuestions(s);
 //		for(int teams=0;teams<_model.getTeamSize();teams++){
 //			jfrm.add(new JLabel(_model.getTeams().get(teams).getName()),BorderLayout.PAGE_START);
 //		}
