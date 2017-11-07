@@ -1,32 +1,45 @@
-public class Team {
+public class Team 
+{
 	
 	private String _name;
 	private int _score;
 	private static int _teamNumber = 0;
 	
-	public Team(String name){
+	//Declaing class and declarations
+	public Team(String name)
+	{
 		_name = name;
 		_score = 0;
 		_teamNumber++;
 	}
 	
-	public void addScore(){
+	//Increasing score
+	public void addScore()
+	{
 		_score++;
 	}
 	
-	public int getScore(){
+	//Return score
+	public int getScore()
+	{
 		return _score;
 	}
 	
-	public String getName(){
+	//Return team name
+	public String getName()
+	{
 		return _name;
 	}
 	
-	public int getPlayerNumber(){
+	//Return players on team
+	public int getPlayerNumber()
+	{
 		return _teamNumber;
 	}
 	
-	public void setName(String name){
+	//Set name of team
+	public void setName(String name)
+	{
 		_name = name;
 	}
 }
