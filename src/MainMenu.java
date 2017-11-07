@@ -30,7 +30,7 @@
 		private JPanel _boardPanel;
 		private JFrame jfrm;
 		private Model _model;
-		static int count = 0;
+//		static int count = 0;
 		
 		public MainMenu(){
 		_model = new Model();
@@ -46,7 +46,7 @@
 	    jfrm.setLocationRelativeTo(null);
 	    jfrm.setLayout(new BorderLayout());
 	    
-		//MenuBar and choices and declaring everything
+		//MenuBar and choices
 		JMenuBar menuBar = new JMenuBar();
 	    JMenu FileMenu = new JMenu("File");
 	    JMenu Help = new JMenu("Help");
@@ -64,6 +64,7 @@
 	    jfrm.add(menuBar);
 	    jfrm.setJMenuBar(menuBar);
 	   
+	    //Setting hotkeys to the items
 	    FileMenu.add(OpenItem);
 	    OpenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Event.CTRL_MASK));
 	    FileMenu.add(QuitItem);
@@ -72,7 +73,6 @@
 	    HelpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,Event.CTRL_MASK));
 	    
 	    //Calling Action Listener
-
 	    QuitItem.addActionListener(this);
 	    HelpItem.addActionListener(this);
 	    OpenItem.addActionListener(this);
@@ -80,7 +80,8 @@
 	    // Display the frame
 	    jfrm.setVisible(true);		 
 	 }
-
+	
+	//About action listener
 	protected void AboutEvent()
 	{	
 		JTextPane panel = new JTextPane();
@@ -90,42 +91,44 @@
 		JOptionPane.showMessageDialog(null, panel,"About this application",JOptionPane.INFORMATION_MESSAGE);	
 	}
 	
-	protected void createAndPopulate(Scanner data){
+	//Happens after file is selected
+	protected void createAndPopulate(Scanner data)
+	{
+		//Using JPanel and grid layout to create the game frame
 		_boardPanel = new JPanel();
 		_boardPanel.setLayout(new GridLayout(6,5));
-		for(int category=0;category<5;category++){ 
-			_boardPanel.add(new JLabel(data.next()));
+		//Category placement
+		for(int category=0;category<5;category++)
+		{ 
+			_boardPanel.add(new JLabel(data.nextLine()));
 		}
-		for(int i=0;i<5;i++){
-			for(int j=0;j<5;j++){
-//			count= i*5+j;	
-	
-			_questions[i][j] = new JButton("$"+(i+1)+"00");
-			
-			_model.getQuestions().add(new Questions(data.nextLine()));
-			_boardPanel.add(_questions[i][j]);
-			
-//			System.out.println(_model.getQuestions().get(count).getQuestion());
-			_questions[i][j].addActionListener(new ActionListener()
+		//Placing row by column placement
+		for(int i=0;i<5;i++)
+		{
+			for(int j=0;j<5;j++)
 			{
-				public void actionPerformed(ActionEvent e)
+				//Point value text for button
+				_questions[i][j] = new JButton("$"+(i+1)+"00");
+				//Getting question from the file and adding it into Questions
+				_model.getQuestions().add(new Questions(data.nextLine()));
+				_boardPanel.add(_questions[i][j]);
+				//Setting name of button equal to value for easier calling
+				_questions[i][j].setName(Integer.toString(5*i+j));
+				//Adding action listener for the buttons
+				_questions[i][j].addActionListener(new ActionListener()
 				{
-//					PopUp press = new PopUp(_model.getQuestions().get().getQuestion());
-//					press.show();
-//					System.out.println(count);
-					buttonPressedEvent();
-				}
-			});
+					public void actionPerformed(ActionEvent e)
+					{
+						//Setting a duplicate button equal to the origin button
+						JButton button = (JButton) e.getSource();
+						//making popup and passing the question inside
+						PopUp press = new PopUp(_model.getQuestions().get(Integer.parseInt(button.getName())).getQuestion());
+					}
+				});
+			
 			}
 			
 		}
-//		for(int k=0;k<24;k++){
-//			System.out.println(_model.getQuestions().get(k).getQuestion());
-//		}
-//		_model.addJeopardyQuestions(s);
-//		for(int teams=0;teams<_model.getTeamSize();teams++){
-//			jfrm.add(new JLabel(_model.getTeams().get(teams).getName()),BorderLayout.PAGE_START);
-//		}
 		jfrm.add(_boardPanel,BorderLayout.CENTER);
 		jfrm.repaint();
 	}
@@ -155,27 +158,22 @@
 			JOptionPane.showMessageDialog(null, "No file chosen.");
 		}
 			
-		}
-
-		public void actionPerformed(ActionEvent e) 
-		{
-			switch(e.getActionCommand())
-			{
-				case "Quit":
-					System.exit(0);
-				break;
-				case "About":
-					AboutEvent();
-				break; 
-				case "Open":
-					OpenEvent();
-				break;
-			}
-		}
-		
-		public void buttonPressedEvent(){
-			PopUp press = new PopUp(_model.getQuestions().get(count).getQuestion());
-			count++;
-		}
-		
 	}
+
+	public void actionPerformed(ActionEvent e) 
+	{
+		switch(e.getActionCommand())
+		{
+			case "Quit":
+				System.exit(0);
+			break;
+			case "About":
+				AboutEvent();
+			break; 
+			case "Open":
+				OpenEvent();
+			break;
+
+		}
+	}		
+}

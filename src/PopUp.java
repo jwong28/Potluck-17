@@ -18,13 +18,16 @@ public class PopUp extends JFrame
 	JButton add = new JButton("Correct");
 	JButton subtract = new JButton ("Wrong");
 	
-	PopUp(String input){
+	PopUp(String input)
+	{
+		//Setting the text of label to the question inputted
 		question.setText(input);
 		this.setSize(500,500);
 		this.setLayout(new FlowLayout());
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
   		this.setLocationRelativeTo(null);
   		
+  		//Add question and buttons to pop up
   		this.add(question);
   		this.add(add);
   		this.add(subtract);
