@@ -30,6 +30,7 @@
 		private JPanel _boardPanel;
 		private JFrame jfrm;
 		private Model _model;
+		static int count = 0;
 		
 		public MainMenu(){
 		_model = new Model();
@@ -97,12 +98,30 @@
 		}
 		for(int i=0;i<5;i++){
 			for(int j=0;j<5;j++){
+//			count= i*5+j;	
+	
 			_questions[i][j] = new JButton("$"+(i+1)+"00");
-			_questions[i][j].addActionListener(this);
+			
 			_model.getQuestions().add(new Questions(data.nextLine()));
 			_boardPanel.add(_questions[i][j]);
+			
+//			System.out.println(_model.getQuestions().get(count).getQuestion());
+			_questions[i][j].addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+//					PopUp press = new PopUp(_model.getQuestions().get().getQuestion());
+//					press.show();
+//					System.out.println(count);
+					buttonPressedEvent();
+				}
+			});
 			}
+			
 		}
+//		for(int k=0;k<24;k++){
+//			System.out.println(_model.getQuestions().get(k).getQuestion());
+//		}
 //		_model.addJeopardyQuestions(s);
 //		for(int teams=0;teams<_model.getTeamSize();teams++){
 //			jfrm.add(new JLabel(_model.getTeams().get(teams).getName()),BorderLayout.PAGE_START);
@@ -153,4 +172,10 @@
 				break;
 			}
 		}
+		
+		public void buttonPressedEvent(){
+			PopUp press = new PopUp(_model.getQuestions().get(count).getQuestion());
+			count++;
+		}
+		
 	}
