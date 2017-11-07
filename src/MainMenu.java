@@ -53,8 +53,9 @@
 	    JMenuItem HelpItem =new JMenuItem("About");
 	    JMenuItem QuitItem = new JMenuItem("Quit");
 	    JMenuItem OpenItem = new JMenuItem("Open");
+	    JMenuItem TeamItem = new JMenuItem("Add Team");
 
-	  //Adding File and Help    
+	    //Adding File and Help    
 	    menuBar.add(FileMenu);
 	    //Alt+F: File
 	    FileMenu.setMnemonic(KeyEvent.VK_F);
@@ -69,12 +70,15 @@
 	    OpenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Event.CTRL_MASK));
 	    FileMenu.add(QuitItem);
 	    QuitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,Event.CTRL_MASK));
+	    FileMenu.add(TeamItem);
+	    TeamItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,Event.CTRL_MASK));
 	    Help.add(HelpItem);
 	    HelpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,Event.CTRL_MASK));
 	    
 	    //Calling Action Listener
 	    QuitItem.addActionListener(this);
 	    HelpItem.addActionListener(this);
+	    TeamItem.addActionListener(this);
 	    OpenItem.addActionListener(this);
 	    
 	    // Display the frame
@@ -159,6 +163,19 @@
 		}
 			
 	}
+	
+	protected void addTeam(){
+		String input = JOptionPane.showInputDialog(null,"What's your team name?");
+		_model.addTeam(input);
+		jfrm.add(new JLabel(input),BorderLayout.LINE_START);
+		update();
+	}
+	
+	protected void update(){
+		//Finish this, basically just repaint the jfrm and make sure 
+		//everything gets renewed. This includes the teams also so if addTeam() is called
+		//the new team team should be shown on the left on top of the other team names.
+	}
 
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -173,7 +190,9 @@
 			case "Open":
 				OpenEvent();
 			break;
-
+			case "Add Team":
+				addTeam();
+			break;
 		}
 	}		
 }
