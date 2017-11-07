@@ -122,7 +122,7 @@
 						//Setting a duplicate button equal to the origin button
 						JButton button = (JButton) e.getSource();
 						//making popup and passing the question inside
-						PopUp press = new PopUp(_model.getQuestions().get(Integer.parseInt(button.getName())).getQuestion());
+						PopUp press = new PopUp(_model.getQuestions().get(Integer.parseInt(button.getName())).getQuestion(),_model);
 					}
 				});
 			
