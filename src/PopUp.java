@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -29,8 +30,12 @@ public class PopUp extends JFrame
 		_model = model;
 		question = new JLabel();
 		add = new JButton("Correct");
+		add.setBackground(Color.BLUE);
+		add.setOpaque(true);
 		add.setPreferredSize(new Dimension(400,400));
 		subtract = new JButton ("Wrong");
+		subtract.setBackground(Color.BLUE);
+		subtract.setOpaque(true);
 		subtract.setPreferredSize(new Dimension(400,400));
 		//Setting the text of label to the question inputted
 		Font font = new Font("Times New Roman",Font.BOLD,24);

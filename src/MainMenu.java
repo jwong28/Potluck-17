@@ -2,7 +2,8 @@
 	import java.awt.BorderLayout;
 	import java.awt.Dimension; 
 	import java.awt.Event;
-	import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.awt.event.KeyEvent;
@@ -11,8 +12,10 @@
 	import java.io.IOException;
 	import java.util.Scanner;
 
-	import javax.swing.JButton;
-	import javax.swing.JFileChooser;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 	import javax.swing.JFrame;
 	import javax.swing.JLabel;
 	import javax.swing.JMenu;
@@ -27,9 +30,10 @@
 		
 		JFileChooser jfc;
 		private JButton[][] _questions; 
-		private JPanel _boardPanel;
+		private JPanel _boardPanel,_teamPanel;
 		private JFrame jfrm;
 		private Model _model;
+		private static int teamNumber = 0;
 //		static int count = 0;
 		
 		public MainMenu(){
@@ -53,8 +57,9 @@
 	    JMenuItem HelpItem =new JMenuItem("About");
 	    JMenuItem QuitItem = new JMenuItem("Quit");
 	    JMenuItem OpenItem = new JMenuItem("Open");
+	    JMenuItem TeamItem = new JMenuItem("Add Team");
 
-	  //Adding File and Help    
+	    //Adding File and Help    
 	    menuBar.add(FileMenu);
 	    //Alt+F: File
 	    FileMenu.setMnemonic(KeyEvent.VK_F);
@@ -69,12 +74,15 @@
 	    OpenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Event.CTRL_MASK));
 	    FileMenu.add(QuitItem);
 	    QuitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,Event.CTRL_MASK));
+	    FileMenu.add(TeamItem);
+	    TeamItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,Event.CTRL_MASK));
 	    Help.add(HelpItem);
 	    HelpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,Event.CTRL_MASK));
 	    
 	    //Calling Action Listener
 	    QuitItem.addActionListener(this);
 	    HelpItem.addActionListener(this);
+	    TeamItem.addActionListener(this);
 	    OpenItem.addActionListener(this);
 	    
 	    // Display the frame
@@ -130,6 +138,11 @@
 			
 		}
 		jfrm.add(_boardPanel,BorderLayout.CENTER);
+		//adds the teams on the left side of the jfrm
+		_teamPanel = new JPanel();
+//		_teamPanel.setLayout(new BoxLayout(_teamPanel,BoxLayout.Y_AXIS));
+		_teamPanel.setLayout(new GridBagLayout());
+		jfrm.add(_teamPanel,BorderLayout.LINE_START);
 		jfrm.repaint();
 	}
 	
@@ -159,6 +172,35 @@
 		}
 			
 	}
+	
+	protected void addTeam(){
+		String input = JOptionPane.showInputDialog(null,"What's your team name?");
+		_model.addTeam(input);
+		JLabel label = new JLabel(input);
+		label.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		_teamPanel.add(label);
+		_teamPanel.add(new JLabel("Score: "+_model.getTeams().get(teamNumber).getScore()));
+		teamNumber++;
+		update();
+	}
+	
+	protected void update(){
+		//Finish this, basically just repaint the jfrm and make sure 
+		//everything gets renewed. This includes the teams also so if addTeam() is called
+		//the new team team should be shown on the left on top of the other team names.
+//		for(int i=1;i<6;i++){
+//			for(int j=0;j<5;j++){
+//				JButton b = (JButton) _boardPanel.getComponentAt(i,j);
+//				if(b.getText().equals("")){b.setOpaque(false);}
+//			}
+//		}
+		/* To be used later on to update the score of each team
+		for(int k=0;k<_model.getTeamSize();k++){
+			
+		}
+		*/
+		jfrm.repaint();
+	}
 
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -173,7 +215,9 @@
 			case "Open":
 				OpenEvent();
 			break;
-
+			case "Add Team":
+				addTeam();
+			break;
 		}
 	}		
 }
