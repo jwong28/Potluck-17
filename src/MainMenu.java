@@ -2,7 +2,8 @@
 	import java.awt.BorderLayout;
 	import java.awt.Dimension; 
 	import java.awt.Event;
-	import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.awt.event.KeyEvent;
@@ -11,8 +12,10 @@
 	import java.io.IOException;
 	import java.util.Scanner;
 
-	import javax.swing.JButton;
-	import javax.swing.JFileChooser;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 	import javax.swing.JFrame;
 	import javax.swing.JLabel;
 	import javax.swing.JMenu;
@@ -27,9 +30,10 @@
 		
 		JFileChooser jfc;
 		private JButton[][] _questions; 
-		private JPanel _boardPanel;
+		private JPanel _boardPanel,_teamPanel;
 		private JFrame jfrm;
 		private Model _model;
+		private static int teamNumber = 0;
 //		static int count = 0;
 		
 		public MainMenu(){
@@ -134,6 +138,11 @@
 			
 		}
 		jfrm.add(_boardPanel,BorderLayout.CENTER);
+		//adds the teams on the left side of the jfrm
+		_teamPanel = new JPanel();
+//		_teamPanel.setLayout(new BoxLayout(_teamPanel,BoxLayout.Y_AXIS));
+		_teamPanel.setLayout(new GridBagLayout());
+		jfrm.add(_teamPanel,BorderLayout.LINE_START);
 		jfrm.repaint();
 	}
 	
@@ -167,7 +176,11 @@
 	protected void addTeam(){
 		String input = JOptionPane.showInputDialog(null,"What's your team name?");
 		_model.addTeam(input);
-		jfrm.add(new JLabel(input),BorderLayout.LINE_START);
+		JLabel label = new JLabel(input);
+		label.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		_teamPanel.add(label);
+		_teamPanel.add(new JLabel("Score: "+_model.getTeams().get(teamNumber).getScore()));
+		teamNumber++;
 		update();
 	}
 	
@@ -175,6 +188,18 @@
 		//Finish this, basically just repaint the jfrm and make sure 
 		//everything gets renewed. This includes the teams also so if addTeam() is called
 		//the new team team should be shown on the left on top of the other team names.
+//		for(int i=1;i<6;i++){
+//			for(int j=0;j<5;j++){
+//				JButton b = (JButton) _boardPanel.getComponentAt(i,j);
+//				if(b.getText().equals("")){b.setOpaque(false);}
+//			}
+//		}
+		/* To be used later on to update the score of each team
+		for(int k=0;k<_model.getTeamSize();k++){
+			
+		}
+		*/
+		jfrm.repaint();
 	}
 
 	public void actionPerformed(ActionEvent e) 
