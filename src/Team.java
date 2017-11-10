@@ -5,7 +5,7 @@ public class Team
 	private int _score;
 	private static int _teamNumber = 0;
 	
-	//Declaing class and declarations
+	//Declaring class and declarations
 	public Team(String name)
 	{
 		_name = name;
@@ -14,9 +14,14 @@ public class Team
 	}
 	
 	//Increasing score
-	public void addScore()
+	public void addScore(int score)
 	{
-		_score++;
+		_score = _score + score;
+	}
+	
+	//Decreasing score
+	public void subtractScore(int score){
+		_score = _score - score;
 	}
 	
 	//Return score

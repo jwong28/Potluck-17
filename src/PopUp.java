@@ -3,28 +3,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 
 public class PopUp extends JFrame 
 {
-	JLabel question;
-	JButton add;
-	JButton subtract;
-	Model _model;
+	private JLabel question;
+	private JButton add;
+	private JButton subtract;
+	private Model _model;
+	private int _score;
 	
-	PopUp(String input, Model model)
+	PopUp(String input, Model model, int score)
 	{
 		JPanel panel = new JPanel(new FlowLayout());
 		_model = model;
@@ -37,7 +29,7 @@ public class PopUp extends JFrame
 		subtract.setBackground(Color.BLUE);
 		subtract.setOpaque(true);
 		subtract.setPreferredSize(new Dimension(400,400));
-		//Setting the text of label to the question inputted
+		//Setting the text of label to the question inputed
 		Font font = new Font("Times New Roman",Font.BOLD,24);
 		question.setFont(font);
 		question.setText(input);
@@ -51,6 +43,8 @@ public class PopUp extends JFrame
   		this.add(question,BorderLayout.PAGE_START);
   		this.add(panel,BorderLayout.CENTER);
   		this.setVisible(true);
+  		//Gotta finish team number for later
+  		Adder adder = new Adder(_model,0,_score);
 	}
 	
 //	public void show(){
