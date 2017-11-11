@@ -2,8 +2,9 @@
 	import java.awt.BorderLayout;
 	import java.awt.Dimension; 
 	import java.awt.Event;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+	import java.awt.GridBagConstraints;
+	import java.awt.GridBagLayout;
+	import java.awt.GridLayout;
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.awt.event.KeyEvent;
@@ -12,10 +13,8 @@ import java.awt.GridLayout;
 	import java.io.IOException;
 	import java.util.Scanner;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
+	import javax.swing.JButton;
+	import javax.swing.JFileChooser;
 	import javax.swing.JFrame;
 	import javax.swing.JLabel;
 	import javax.swing.JMenu;
@@ -123,26 +122,16 @@ import javax.swing.JFileChooser;
 				//Setting name of button equal to value for easier calling
 				_questions[i][j].setName(Integer.toString(5*i+j));
 				//Adding action listener for the buttons
-				_questions[i][j].addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						//Setting a duplicate button equal to the origin button
-						JButton button = (JButton) e.getSource();
-						//making popup and passing the question inside
-						PopUp press = new PopUp(_model.getQuestions().get(Integer.parseInt(button.getName())).getQuestion(),_model);
-					}
-				});
-			
+				_questions[i][j].addActionListener(new PopupHandler(
+				_model.getQuestions().get((i*5)+j).getQuestion(),_model,i+1));	
 			}
-			
 		}
 		jfrm.add(_boardPanel,BorderLayout.CENTER);
 		//adds the teams on the left side of the jfrm
 		_teamPanel = new JPanel();
-//		_teamPanel.setLayout(new BoxLayout(_teamPanel,BoxLayout.Y_AXIS));
 		_teamPanel.setLayout(new GridBagLayout());
 		jfrm.add(_teamPanel,BorderLayout.LINE_START);
+		jfrm.revalidate();
 		jfrm.repaint();
 	}
 	
@@ -176,10 +165,13 @@ import javax.swing.JFileChooser;
 	protected void addTeam(){
 		String input = JOptionPane.showInputDialog(null,"What's your team name?");
 		_model.addTeam(input);
-		JLabel label = new JLabel(input);
-		label.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		_teamPanel.add(label);
-		_teamPanel.add(new JLabel("Score: "+_model.getTeams().get(teamNumber).getScore()));
+		JLabel label = new JLabel(input + "   Score: "+_model.getTeams().get(teamNumber).getScore());
+		label.setPreferredSize(new Dimension(100,150));
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = teamNumber;
+		_teamPanel.add(label,c);
 		teamNumber++;
 		update();
 	}
@@ -190,15 +182,15 @@ import javax.swing.JFileChooser;
 		//the new team team should be shown on the left on top of the other team names.
 //		for(int i=1;i<6;i++){
 //			for(int j=0;j<5;j++){
-//				JButton b = (JButton) _boardPanel.getComponentAt(i,j);
-//				if(b.getText().equals("")){b.setOpaque(false);}
+//				if(_questions[i][j].getText().equals("")){_questions[i][j].setOpaque(false);}
 //			}
 //		}
-		/* To be used later on to update the score of each team
-		for(int k=0;k<_model.getTeamSize();k++){
-			
-		}
-		*/
+		
+//		for(int k=0;k<_model.getTeamSize();k++){
+//			_teamPanel.getComponentAt(0, k).setName(
+//			_teamPanel.getComponents()[k].getName()+ "   Score: "+_model.getTeams().get(teamNumber).getScore());
+//		}
+		jfrm.revalidate();
 		jfrm.repaint();
 	}
 
