@@ -1,13 +1,14 @@
 public class Questions 
 {
 	private String _question;
-	private boolean _jeopardy;
+	private boolean _jeopardy,_isEmpty;
 	
 	//Questions have their own class
 	public Questions(String question)
 	{
 		_question = question;
 		_jeopardy = false;
+		_isEmpty = false;
 	}
 	
 	//Double question jeopardy
@@ -23,6 +24,14 @@ public class Questions
 		return _question;
 	}
 	
+	//When done with question, sets the question to " " for removal
+	public void remove(){
+		_isEmpty = true;
+	}
+	
+	public boolean isEmpty(){
+		return _isEmpty;
+	}
 	//Return double jeopardy value
 	public boolean isJeopardy()
 	{

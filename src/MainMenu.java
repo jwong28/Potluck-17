@@ -1,4 +1,3 @@
-
 	import java.awt.BorderLayout;
 	import java.awt.Dimension; 
 	import java.awt.Event;
@@ -25,7 +24,7 @@
 	import javax.swing.JTextPane;
 	import javax.swing.KeyStroke;
 
-	public class MainMenu implements ActionListener{
+	public class MainMenu implements ActionListener,Observer{
 		
 		JFileChooser jfc;
 		private JButton[][] _questions; 
@@ -33,10 +32,13 @@
 		private JFrame jfrm;
 		private Model _model;
 		private static int teamNumber = 0;
-//		static int count = 0;
 		
 		public MainMenu(){
+		//Back-end model where all the calculations are done
 		_model = new Model();
+		//Makes an observer for model which calls the update method every time turns is reset in the model 
+		_model.setObserver(this);
+		//Creates a 5x5 array of JButtons for the questions
 		_questions = new JButton[5][5];
 		// Create a frame
 	    jfrm = new JFrame("A.S.I.A Jeopardy");
@@ -47,6 +49,7 @@
 	    //Size of frame
 	    jfrm.setSize(1650, 1080);
 	    jfrm.setLocationRelativeTo(null);
+	    //Sets layout to allow for adding panels on the top,bottom,left,right, and center
 	    jfrm.setLayout(new BorderLayout());
 	    
 		//MenuBar and choices
@@ -123,18 +126,24 @@
 				_questions[i][j].setName(Integer.toString(5*i+j));
 				//Adding action listener for the buttons
 				_questions[i][j].addActionListener(new PopupHandler(
-				_model.getQuestions().get((i*5)+j).getQuestion(),_model,i+1));	
+				_model.getQuestions().get((i*5)+j).getQuestion(),_model,i,j));	
 			}
 		}
+		//adds the 5x5 board to the center of the frame
 		jfrm.add(_boardPanel,BorderLayout.CENTER);
-		//adds the teams on the left side of the jfrm
+		//Makes a team panel to store the team names and score
 		_teamPanel = new JPanel();
+		//Sets the layout so that when teams are added, they are centered right away
 		_teamPanel.setLayout(new GridBagLayout());
-		jfrm.add(_teamPanel,BorderLayout.LINE_START);
+		//adds the teams to the bottom of the jfrm
+		jfrm.add(_teamPanel,BorderLayout.PAGE_END);
+		
+		//updates visually the frame
 		jfrm.revalidate();
 		jfrm.repaint();
 	}
 	
+	//Opens a text file to read from
 	protected void OpenEvent()
 	{
 		jfc.setDialogTitle("Choose a file to read: ");
@@ -150,7 +159,8 @@
 			catch (FileNotFoundException ex)
 			{
 				JOptionPane.showMessageDialog(null,"File is not found.");
-			} catch (IOException e1) {
+			} 
+			catch (@SuppressWarnings("hiding") IOException e1) {
 				JOptionPane.showMessageDialog(null, "Text file not chosen.");
 				e1.printStackTrace();
 			}
@@ -162,38 +172,39 @@
 			
 	}
 	
+	//Adds teams to the _teamPanel
 	protected void addTeam(){
 		String input = JOptionPane.showInputDialog(null,"What's your team name?");
 		_model.addTeam(input);
-		JLabel label = new JLabel(input + "   Score: "+_model.getTeams().get(teamNumber).getScore());
-		label.setPreferredSize(new Dimension(100,150));
+		JLabel label = new JLabel("<html>"+input + "<br>Score: "+_model.getTeams().get(teamNumber).getScore()+"</html>");
+		label.setPreferredSize(new Dimension(200,100));
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = teamNumber;
+		c.gridx = teamNumber;
+		c.gridy = 0;
 		_teamPanel.add(label,c);
 		teamNumber++;
-		update();
-	}
-	
-	protected void update(){
-		//Finish this, basically just repaint the jfrm and make sure 
-		//everything gets renewed. This includes the teams also so if addTeam() is called
-		//the new team team should be shown on the left on top of the other team names.
-//		for(int i=1;i<6;i++){
-//			for(int j=0;j<5;j++){
-//				if(_questions[i][j].getText().equals("")){_questions[i][j].setOpaque(false);}
-//			}
-//		}
-		
-//		for(int k=0;k<_model.getTeamSize();k++){
-//			_teamPanel.getComponentAt(0, k).setName(
-//			_teamPanel.getComponents()[k].getName()+ "   Score: "+_model.getTeams().get(teamNumber).getScore());
-//		}
 		jfrm.revalidate();
 		jfrm.repaint();
 	}
+	
+	//Updates the board visually
+	public void update(){
+		for(int i=0;i<5;i++){
+			for(int j=0;j<5;j++){
+				if(_model.getQuestions().get((i*5)+j).isEmpty()){_questions[i][j].setVisible(false);}
+			}
+		}
+		
+		for(int k=0;k<_model.getTeamSize();k++){
+			JLabel temp = (JLabel)_teamPanel.getComponent(k);
+			temp.setText("<html>"+_model.getTeams().get(k).getName()+"<br>Score: "+_model.getTeams().get(k).getScore()*100+"</html>");
+		}
 
+		jfrm.revalidate();
+		jfrm.repaint();
+	}
+	
 	public void actionPerformed(ActionEvent e) 
 	{
 		switch(e.getActionCommand())
