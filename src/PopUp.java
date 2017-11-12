@@ -10,48 +10,52 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+//Pop-up menu that appears when the JButton in Main menu is clicked on  
+@SuppressWarnings("serial")
 public class PopUp extends JFrame 
-{
-	private JLabel question;
-	private JButton add;
-	private JButton subtract;
-	private Model _model;
-	private int _score;
-	
-	PopUp(String input, Model model, int score)
+{	
+	//Constructor for the Pop-up menu
+	PopUp(String input, Model model, int score, int column)
 	{
+		//Creates panels,labels, and buttons to put on the Pop-up
 		JPanel panel = new JPanel(new FlowLayout());
 		JPanel questionPanel = new JPanel(new GridBagLayout());
-		_model = model;
-		question = new JLabel();
-		add = new JButton("Correct");
+		JLabel question = new JLabel("<html>"+input+"</html>");
+		JButton add = new JButton("Correct");
+		JButton subtract = new JButton ("Wrong");
+		Font font = new Font("Times New Roman",Font.BOLD,70);
+		Adder adder = new Adder(model,score,column,this);
+  		Subtracter subtracter = new Subtracter(model,score,column,this);
+  		
+  		//Configures the add button 
 		add.setBackground(Color.BLUE);
 		add.setOpaque(true);
 		add.setPreferredSize(new Dimension(200,100));
-		subtract = new JButton ("Wrong");
+		add.addActionListener(adder);
+		
+		//Configures the subtract button
 		subtract.setBackground(Color.BLUE);
 		subtract.setOpaque(true);
 		subtract.setPreferredSize(new Dimension(200,100));
-		//Setting the text of label to the question inputed
-		Font font = new Font("Times New Roman",Font.BOLD,70);
+  		subtract.addActionListener(subtracter);
+  		
+  		//Sets the font and size of the question
 		question.setFont(font);
-		question.setText("<html>"+input+"</html>");
 		question.setPreferredSize(new Dimension(700,400));
+
+		//Sets the size of the Pop-up menu
 		this.setSize(1300,800);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
   		this.setLocationRelativeTo(null);
+  		
   		//Add question and buttons to pop up
   		panel.add(add);
   		panel.add(subtract);
   		questionPanel.add(question);
   		this.add(questionPanel,BorderLayout.CENTER);
   		this.add(panel,BorderLayout.PAGE_END);
+  		
   		this.setVisible(true);
-  		//Gotta finish team number for later
-  		Adder adder = new Adder(_model,_score,this);
-  		add.addActionListener(adder);
-  		Subtracter subtracter = new Subtracter(_model,_score,this);
-  		subtract.addActionListener(subtracter);
 	}
 }
