@@ -1,6 +1,8 @@
 	import java.awt.BorderLayout;
+	import java.awt.Color;
 	import java.awt.Dimension; 
 	import java.awt.Event;
+	import java.awt.Font;
 	import java.awt.GridBagConstraints;
 	import java.awt.GridBagLayout;
 	import java.awt.GridLayout;
@@ -12,6 +14,7 @@
 	import java.io.IOException;
 	import java.util.Scanner;
 
+	import javax.swing.BorderFactory;
 	import javax.swing.JButton;
 	import javax.swing.JFileChooser;
 	import javax.swing.JFrame;
@@ -23,6 +26,7 @@
 	import javax.swing.JPanel;
 	import javax.swing.JTextPane;
 	import javax.swing.KeyStroke;
+	import javax.swing.border.Border;
 
 	public class MainMenu implements ActionListener,Observer{
 		
@@ -107,10 +111,18 @@
 		//Using JPanel and grid layout to create the game frame
 		_boardPanel = new JPanel();
 		_boardPanel.setLayout(new GridLayout(6,5));
+		_boardPanel.setBackground(Color.BLUE);
+		Border line = BorderFactory.createLineBorder(Color.BLACK, 4);
 		//Category placement
 		for(int category=0;category<5;category++)
 		{ 
-			_boardPanel.add(new JLabel(data.nextLine()));
+			JLabel temp = new JLabel(data.nextLine(),JLabel.CENTER);
+			temp.setOpaque(true);
+			temp.setForeground(Color.WHITE);
+			temp.setBackground(Color.BLUE);
+			temp.setBorder(line);
+			temp.setFont(new Font("Arial",Font.BOLD,32));
+			_boardPanel.add(temp);
 		}
 		//Placing row by column placement
 		for(int i=0;i<5;i++)
@@ -118,7 +130,13 @@
 			for(int j=0;j<5;j++)
 			{
 				//Point value text for button
-				_questions[i][j] = new JButton("$"+(i+1)+"00");
+				JButton temp = new JButton("$"+(i+1)+"00");
+				temp.setOpaque(true);
+				temp.setBackground(Color.BLUE);
+				temp.setForeground(Color.YELLOW);
+				temp.setBorder(line);
+				temp.setFont(new Font("Arial",Font.BOLD,40));
+				_questions[i][j] = temp; 
 				//Getting question from the file and adding it into Questions
 				_model.getQuestions().add(new Questions(data.nextLine()));
 				_boardPanel.add(_questions[i][j]);
@@ -136,6 +154,7 @@
 		//Sets the layout so that when teams are added, they are centered right away
 		_teamPanel.setLayout(new GridBagLayout());
 		//adds the teams to the bottom of the jfrm
+		_teamPanel.setBackground(Color.BLUE);
 		jfrm.add(_teamPanel,BorderLayout.PAGE_END);
 		
 		//updates visually the frame
@@ -174,25 +193,37 @@
 	
 	//Adds teams to the _teamPanel
 	protected void addTeam(){
+		try{
 		String input = JOptionPane.showInputDialog(null,"What's your team name?");
 		_model.addTeam(input);
-		JLabel label = new JLabel("<html>"+input + "<br>Score: "+_model.getTeams().get(teamNumber).getScore()+"</html>");
+		JLabel label = new JLabel("<html>"+input + "<br>Score: "+_model.getTeams().get(teamNumber).getScore()+"</html>",JLabel.CENTER);
 		label.setPreferredSize(new Dimension(200,100));
+		label.setBorder(BorderFactory.createMatteBorder(0,1,0,1,Color.BLACK));
+		label.setFont(new Font("Arial",Font.BOLD,24));
+		label.setForeground(Color.WHITE);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = teamNumber;
 		c.gridy = 0;
+//		c.insets = new Insets(0,5,0,5);
 		_teamPanel.add(label,c);
 		teamNumber++;
 		jfrm.revalidate();
 		jfrm.repaint();
+		}
+		catch(NullPointerException e1){
+			JOptionPane.showMessageDialog(null, "You have to load the board first!.");			
+		}
 	}
 	
 	//Updates the board visually
 	public void update(){
 		for(int i=0;i<5;i++){
 			for(int j=0;j<5;j++){
-				if(_model.getQuestions().get((i*5)+j).isEmpty()){_questions[i][j].setVisible(false);}
+				if(_model.getQuestions().get((i*5)+j).isEmpty()){
+					_questions[i][j].setText("");
+					_questions[i][j].setEnabled(false);
+				}
 			}
 		}
 		
@@ -205,6 +236,13 @@
 		jfrm.repaint();
 	}
 	
+//	//Makes the Jeopardy music play in the background on a loop
+//	public void playJeopardySound(){
+//		try{
+//			AudioPlayer player = AudioPlayer.player;
+//			
+//		}
+//	}
 	public void actionPerformed(ActionEvent e) 
 	{
 		switch(e.getActionCommand())
