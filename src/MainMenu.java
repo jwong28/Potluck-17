@@ -51,7 +51,7 @@
 	    //Set to exit
 	    jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    //Size of frame
-	    jfrm.setSize(1650, 1080);
+	    jfrm.setSize(1440, 1080);
 	    jfrm.setLocationRelativeTo(null);
 	    //Sets layout to allow for adding panels on the top,bottom,left,right, and center
 	    jfrm.setLayout(new BorderLayout());
@@ -135,8 +135,8 @@
 				temp.setBackground(Color.BLUE);
 				temp.setForeground(Color.YELLOW);
 				temp.setBorder(line);
-				temp.setFont(new Font("Arial",Font.BOLD,40));
-				_questions[i][j] = temp; 
+				temp.setFont(new Font("Arial",Font.BOLD,32));
+				_questions[i][j] = temp;
 				//Getting question from the file and adding it into Questions
 				_model.getQuestions().add(new Questions(data.nextLine()));
 				_boardPanel.add(_questions[i][j]);
@@ -155,6 +155,8 @@
 		_teamPanel.setLayout(new GridBagLayout());
 		//adds the teams to the bottom of the jfrm
 		_teamPanel.setBackground(Color.BLUE);
+		//Sets the prefered size of the team panel
+		_teamPanel.setPreferredSize(new Dimension(jfrm.getWidth(),100));
 		jfrm.add(_teamPanel,BorderLayout.PAGE_END);
 		
 		//updates visually the frame
@@ -197,22 +199,26 @@
 		String input = JOptionPane.showInputDialog(null,"What's your team name?");
 		_model.addTeam(input);
 		JLabel label = new JLabel("<html>"+input + "<br>Score: "+_model.getTeams().get(teamNumber).getScore()+"</html>",JLabel.CENTER);
-		label.setPreferredSize(new Dimension(200,100));
+		label.setHorizontalTextPosition(JLabel.CENTER);
 		label.setBorder(BorderFactory.createMatteBorder(0,1,0,1,Color.BLACK));
-		label.setFont(new Font("Arial",Font.BOLD,24));
+		label.setFont(new Font("Arial",Font.BOLD,30));
 		label.setForeground(Color.WHITE);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = teamNumber;
 		c.gridy = 0;
-//		c.insets = new Insets(0,5,0,5);
 		_teamPanel.add(label,c);
+		for(int i=0;i<_model.getTeamSize();i++){
+			JLabel temp = (JLabel)_teamPanel.getComponent(i);
+			temp.setPreferredSize(new Dimension(_teamPanel.getWidth()/_model.getTeamSize(),100));
+		}
 		teamNumber++;
 		jfrm.revalidate();
 		jfrm.repaint();
 		}
 		catch(NullPointerException e1){
-			JOptionPane.showMessageDialog(null, "You have to load the board first!.");			
+			JOptionPane.showMessageDialog(null, "You have to load the board first!.");	
+			_model.getTeams().remove(_model.getTeamSize()-1);
 		}
 	}
 	

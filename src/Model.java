@@ -59,6 +59,11 @@ public class Model
 		_turn++;
 	}
 	
+	//This is so if we want to go back we can go back one turn
+	public void previousTurn(){
+		_turn--;
+	}
+	
 	//returns the questions 
 	public ArrayList<Questions> getQuestions()
 	{

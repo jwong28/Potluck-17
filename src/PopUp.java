@@ -1,23 +1,34 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 //Pop-up menu that appears when the JButton in Main menu is clicked on  
 @SuppressWarnings("serial")
 public class PopUp extends JFrame 
 {	
+	JLabel _teamName;
+	Model _model;
 	//Constructor for the Pop-up menu
 	PopUp(String input, Model model, int score, int column)
 	{
+		//MenuBar and choices
+		JMenuBar menuBar = new JMenuBar();
+		JMenuItem BackItem = new JMenuItem("Go Back");
+		
 		//Creates panels,labels, and buttons to put on the Pop-up
 		JPanel panel = new JPanel(new FlowLayout());
 		JPanel questionPanel = new JPanel(new GridBagLayout());
@@ -25,8 +36,20 @@ public class PopUp extends JFrame
 		JButton add = new JButton("Correct");
 		JButton subtract = new JButton ("Wrong");
 		Font font = new Font("Arial",Font.BOLD,70);
+		_model = model;
 		Adder adder = new Adder(model,score,column,this);
   		Subtracter subtracter = new Subtracter(model,score,column,this);
+
+  		//Sets the undo to control + z to go to previous team's turn
+  		BackItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,Event.CTRL_MASK));
+//  		BackItem.addActionListener(new ActionListener(
+  		
+  		//Sets the Team Name
+  		_teamName = new JLabel(model.getTeams().get(0).getName());
+  		_teamName.setPreferredSize(new Dimension(200,100));
+  		_teamName.setFont(new Font("Arial",Font.BOLD,40));
+  		_teamName.setForeground(Color.WHITE);
+  		_teamName.setBackground(Color.BLUE);
   		
   		//Sets the size of the Pop-up menu
   		this.setSize(1300,850);
@@ -67,12 +90,21 @@ public class PopUp extends JFrame
   		panel.setPreferredSize(new Dimension(1300,100));
   		
   		//Add question and buttons to pop up
+  		menuBar.add(BackItem);
+  		panel.add(_teamName);
   		panel.add(add);
   		panel.add(subtract);
   		questionPanel.add(question);
+  		this.add(menuBar);
   		this.add(questionPanel,BorderLayout.CENTER);
   		this.add(panel,BorderLayout.PAGE_END);
-  		
   		this.setVisible(true);
+	}
+	
+	//Updates the popup visually with the new team's name
+	public void update(int index){
+		_teamName.setText(_model.getTeams().get(index).getName());
+		this.revalidate();
+		this.repaint();
 	}
 }
