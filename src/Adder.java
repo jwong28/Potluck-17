@@ -27,7 +27,7 @@ public class Adder implements ActionListener{
 		if(_model.getTeamSize() == _model.getTurn()){
 			_model.removeQuestion((_score*5)+_column);
 			_model.resetTurn();
-			_j.dispose();
+			_j.getFrame().dispose();
 		}
 	}
 

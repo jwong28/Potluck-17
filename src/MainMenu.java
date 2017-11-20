@@ -2,6 +2,7 @@
 	import java.awt.Color;
 	import java.awt.Dimension; 
 	import java.awt.Event;
+	import java.awt.FlowLayout;
 	import java.awt.Font;
 	import java.awt.GridBagConstraints;
 	import java.awt.GridBagLayout;
@@ -12,9 +13,11 @@
 	import java.io.FileNotFoundException;
 	import java.io.FileReader;
 	import java.io.IOException;
+	import java.util.ArrayList;
 	import java.util.Scanner;
 
 	import javax.swing.BorderFactory;
+	import javax.swing.BoxLayout;
 	import javax.swing.JButton;
 	import javax.swing.JFileChooser;
 	import javax.swing.JFrame;
@@ -138,13 +141,13 @@
 				temp.setFont(new Font("Arial",Font.BOLD,32));
 				_questions[i][j] = temp;
 				//Getting question from the file and adding it into Questions
-				_model.getQuestions().add(new Questions(data.nextLine()));
+				_model.getQuestions().add(new Questions(data.nextLine(),data.nextLine()));
 				_boardPanel.add(_questions[i][j]);
 				//Setting name of button equal to value for easier calling
 				_questions[i][j].setName(Integer.toString(5*i+j));
 				//Adding action listener for the buttons
 				_questions[i][j].addActionListener(new PopupHandler(
-				_model.getQuestions().get((i*5)+j).getQuestion(),_model,i,j));	
+				_model.getQuestions().get((i*5)+j),_model,i,j));	
 			}
 		}
 		//adds the 5x5 board to the center of the frame
@@ -237,9 +240,54 @@
 			JLabel temp = (JLabel)_teamPanel.getComponent(k);
 			temp.setText("<html>"+_model.getTeams().get(k).getName()+"<br>Score: "+_model.getTeams().get(k).getScore()*100+"</html>");
 		}
-
 		jfrm.revalidate();
 		jfrm.repaint();
+		if(_model.isEnd()){
+			endGame();
+		}
+	}
+	
+	//Shows the winners when game ends
+	public void endGame(){
+		jfrm.setVisible(false);
+		
+		JFrame end = new JFrame("Here's the winners!");
+		JPanel winPanel = new JPanel();
+		JPanel headingPanel = new JPanel();
+		ArrayList<Team> winners = new ArrayList<Team>();
+		winners = _model.highestScore();
+		JLabel heading = new JLabel("Congratualtions to",JLabel.CENTER);
+		
+		winPanel.setBackground(Color.BLUE);
+		winPanel.setLayout(new BoxLayout(winPanel,BoxLayout.PAGE_AXIS));
+		
+		headingPanel.setLayout(new FlowLayout());
+		headingPanel.setBackground(Color.BLUE);
+		
+		end.setSize(1440,1080);
+		end.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		end.setLocationRelativeTo(jfrm);
+		end.setLayout(new BorderLayout());
+		
+		heading.setFont(new Font("Arial",Font.BOLD,40));
+		heading.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.BLACK));
+		heading.setPreferredSize(new Dimension(1440,80));
+		heading.setBackground(Color.BLUE);
+		heading.setForeground(Color.WHITE);
+		
+		for(int i=0;i<winners.size();i++){
+			JLabel win = new JLabel("<html>Team "+winners.get(i).getName()+"<br>Score: "+winners.get(i).getScore()*100+"</html>");
+			win.setPreferredSize(new Dimension(720,1000/winners.size()));
+			win.setFont(new Font("Arial",Font.BOLD,40));
+			win.setBorder(BorderFactory.createMatteBorder(1, 1, 0, 1, Color.BLACK));
+			win.setBackground(Color.BLUE);
+			win.setForeground(Color.WHITE);
+			winPanel.add(win);
+		}
+		headingPanel.add(heading);
+		end.add(headingPanel,BorderLayout.PAGE_START);
+		end.add(winPanel,BorderLayout.CENTER);
+		end.setVisible(true);
 	}
 	
 //	//Makes the Jeopardy music play in the background on a loop

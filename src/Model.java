@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 public class Model 
 {
 	//Array list for both teams and questions
@@ -10,6 +12,10 @@ public class Model
 	private int _turn;
 	//Observer that updates the GUI whenever something here is changed
 	private Observer _observer;
+	//Counter to tell when all the questions are used
+	private int _endCounter;
+	//Tells us if the game has ended
+	private boolean _isEnd;
 	//Created within the Main Menu
 	public Model()
 	{
@@ -17,6 +23,8 @@ public class Model
 		_questions = new ArrayList<Questions>();
 		_turn = 0;
 		_observer = null;
+		_endCounter = 0;
+		_isEnd = false;
 	}
 	
 	//Sets the observer to notify when something is changed
@@ -48,6 +56,10 @@ public class Model
 		return _turn;
 	}
 	
+	public boolean isEnd(){
+		return _isEnd;
+	}
+	
 	//This method is used to when all the teams have went, the turn resets so a new button can be pressed
 	public void resetTurn(){
 		_turn = 0;
@@ -61,7 +73,13 @@ public class Model
 	
 	//This is so if we want to go back we can go back one turn
 	public void previousTurn(){
-		_turn--;
+		if((_turn - 1) == -1){
+			JOptionPane.showMessageDialog(null,"What're you trying to do? It's Team 1's turn!");
+		}
+		else{
+			_turn--;	
+			_teams.get(_turn).setScore(_teams.get(_turn).getPreviousScore());
+		}
 	}
 	
 	//returns the questions 
@@ -73,6 +91,10 @@ public class Model
 	//Removes a question in _questions by calling the remove function in question
 	public void removeQuestion(int position){
 		_questions.get(position).remove();
+		_endCounter++;
+		if(_endCounter == _questions.size()){
+			_isEnd = true;
+		}
 	}
 	
 	//Adding double jeopardy question
@@ -94,4 +116,22 @@ public class Model
 	{
 		return _questions.size();
 	}
+	
+	//Which team(s) has the highest score
+	public ArrayList<Team> highestScore(){
+		int max = 0;
+		ArrayList<Team> winners = new ArrayList<Team>();
+		for(int i=0;i<_teams.size();i++){
+			if(_teams.get(i).getScore()>max){
+				max = _teams.get(i).getScore();
+			}
+		}
+		for(int j=0;j<_teams.size();j++){
+			if(_teams.get(j).getScore() == max){
+				winners.add(_teams.get(j));
+			}
+		}
+		return winners;
+	}
+	
 }
