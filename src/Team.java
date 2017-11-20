@@ -2,7 +2,7 @@ public class Team
 {
 	
 	private String _name;
-	private int _score;
+	private int _score,_previousScore;
 	private static int _teamNumber = 0;
 	
 	//Declaring class and declarations
@@ -11,16 +11,19 @@ public class Team
 		_name = name;
 		_score = 0;
 		_teamNumber++;
+		_previousScore = 0;
 	}
 	
 	//Increasing score
 	public void addScore(int score)
 	{
+		_previousScore = _score;
 		_score = _score + score;
 	}
 	
 	//Decreasing score
 	public void subtractScore(int score){
+		_previousScore = _score;
 		_score = _score - score;
 	}
 	
@@ -29,7 +32,10 @@ public class Team
 	{
 		return _score;
 	}
-	
+	//Return previous score
+	public int getPreviousScore(){
+		return _previousScore;
+	}
 	//Return team name
 	public String getName()
 	{
@@ -46,5 +52,10 @@ public class Team
 	public void setName(String name)
 	{
 		_name = name;
+	}
+	
+	//Set score of team
+	public void setScore(int score){
+		_score = score;
 	}
 }
