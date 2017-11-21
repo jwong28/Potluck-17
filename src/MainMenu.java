@@ -10,10 +10,12 @@
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.awt.event.KeyEvent;
-	import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FileNotFoundException;
 	import java.io.FileReader;
 	import java.io.IOException;
-	import java.util.ArrayList;
+import java.net.URL;
+import java.util.ArrayList;
 	import java.util.Scanner;
 
 	import javax.swing.BorderFactory;
@@ -39,6 +41,7 @@
 		private JFrame jfrm;
 		private Model _model;
 		private static int teamNumber = 0;
+		URL url = MainMenu.class.getResource("input.txt");
 		
 		public MainMenu(){
 		//Back-end model where all the calculations are done
@@ -65,8 +68,6 @@
 	    JMenu Help = new JMenu("Help");
 	    JMenuItem HelpItem =new JMenuItem("About");
 	    JMenuItem QuitItem = new JMenuItem("Quit");
-	    JMenuItem OpenItem = new JMenuItem("Open");
-	    JMenuItem TeamItem = new JMenuItem("Add Team");
 
 	    //Adding File and Help    
 	    menuBar.add(FileMenu);
@@ -79,23 +80,28 @@
 	    jfrm.setJMenuBar(menuBar);
 	   
 	    //Setting hotkeys to the items
-	    FileMenu.add(OpenItem);
-	    OpenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,Event.CTRL_MASK));
 	    FileMenu.add(QuitItem);
 	    QuitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,Event.CTRL_MASK));
-	    FileMenu.add(TeamItem);
-	    TeamItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,Event.CTRL_MASK));
 	    Help.add(HelpItem);
 	    HelpItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,Event.CTRL_MASK));
 	    
 	    //Calling Action Listener
 	    QuitItem.addActionListener(this);
 	    HelpItem.addActionListener(this);
-	    TeamItem.addActionListener(this);
-	    OpenItem.addActionListener(this);
+	    try
+		{
+			File f = new File(url.toURI());
+			Scanner data = new Scanner(f);
+			createAndPopulate(data);
+			data.close();
+		}
+		catch(Exception e){}
 	    
 	    // Display the frame
-	    jfrm.setVisible(true);		 
+	    jfrm.setVisible(true);
+	    
+	    addTeam();
+	    
 	 }
 	
 	//About action listener
@@ -167,63 +173,33 @@
 		jfrm.repaint();
 	}
 	
-	//Opens a text file to read from
-	protected void OpenEvent()
-	{
-		jfc.setDialogTitle("Choose a file to read: ");
-		int jfcResult = jfc.showOpenDialog(null); //Pass null to center the dialog
-		if(jfcResult == JFileChooser.APPROVE_OPTION)
-		{
-			try
-			{			
-				Scanner data = new Scanner(new FileReader(jfc.getSelectedFile()));
-				createAndPopulate(data);
-				data.close();
-			}
-			catch (FileNotFoundException ex)
-			{
-				JOptionPane.showMessageDialog(null,"File is not found.");
-			} 
-			catch (@SuppressWarnings("hiding") IOException e1) {
-				JOptionPane.showMessageDialog(null, "Text file not chosen.");
-				e1.printStackTrace();
-			}
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(null, "No file chosen.");
-		}
-			
-	}
-	
 	//Adds teams to the _teamPanel
 	protected void addTeam(){
 		try{
-		String input = JOptionPane.showInputDialog(null,"What's your team name?");
-		_model.addTeam(input);
-		JLabel label = new JLabel("<html>"+input + "<br>Score: "+_model.getTeams().get(teamNumber).getScore()+"</html>",JLabel.CENTER);
-		label.setHorizontalTextPosition(JLabel.CENTER);
-		label.setBorder(BorderFactory.createMatteBorder(0,1,0,1,Color.BLACK));
-		label.setFont(new Font("Arial",Font.BOLD,30));
-		label.setForeground(Color.WHITE);
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = teamNumber;
-		c.gridy = 0;
-		_teamPanel.add(label,c);
-		for(int i=0;i<_model.getTeamSize();i++){
-			JLabel temp = (JLabel)_teamPanel.getComponent(i);
-			temp.setPreferredSize(new Dimension(_teamPanel.getWidth()/_model.getTeamSize(),100));
+			String input = JOptionPane.showInputDialog(null,"Team "+ (teamNumber+1) +": What's your name?");
+			if(input.equals("Q")) return;
+			_model.addTeam(input);
+			JLabel label = new JLabel("<html>"+input + "<br>Score: "+_model.getTeams().get(teamNumber).getScore()+"</html>",JLabel.CENTER);
+			label.setHorizontalTextPosition(JLabel.CENTER);
+			label.setBorder(BorderFactory.createMatteBorder(0,1,0,1,Color.BLACK));
+			label.setFont(new Font("Arial",Font.BOLD,30));
+			label.setForeground(Color.WHITE);
+			GridBagConstraints c = new GridBagConstraints();
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridx = teamNumber;
+			c.gridy = 0;
+			_teamPanel.add(label,c);
+			for(int i=0;i<_model.getTeamSize();i++){
+				JLabel temp = (JLabel)_teamPanel.getComponent(i);
+				temp.setPreferredSize(new Dimension(_teamPanel.getWidth()/_model.getTeamSize(),100));
+			}
+			teamNumber++;
+			jfrm.revalidate();
+			jfrm.repaint();
+			addTeam();
 		}
-		teamNumber++;
-		jfrm.revalidate();
-		jfrm.repaint();
+		catch(Exception e ){}
 		}
-		catch(NullPointerException e1){
-			JOptionPane.showMessageDialog(null, "You have to load the board first!.");	
-			_model.getTeams().remove(_model.getTeamSize()-1);
-		}
-	}
 	
 	//Updates the board visually
 	public void update(){
@@ -290,13 +266,7 @@
 		end.setVisible(true);
 	}
 	
-//	//Makes the Jeopardy music play in the background on a loop
-//	public void playJeopardySound(){
-//		try{
-//			AudioPlayer player = AudioPlayer.player;
-//			
-//		}
-//	}
+
 	public void actionPerformed(ActionEvent e) 
 	{
 		switch(e.getActionCommand())
@@ -307,12 +277,6 @@
 			case "About":
 				AboutEvent();
 			break; 
-			case "Open":
-				OpenEvent();
-			break;
-			case "Add Team":
-				addTeam();
-			break;
 		}
 	}		
 }
