@@ -8,9 +8,13 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -20,11 +24,18 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 //Pop-up menu that appears when the JButton in Main menu is clicked on  
-public class PopUp implements ActionListener
+public class PopUp implements ActionListener /*, KeyListener*/
 {	
 	JLabel _teamName;
 	Model _model;
 	JFrame _frame;
+	int score;
+	int column;
+	Questions question;
+	JButton questionButton;
+	JButton add;
+	JButton subtract;
+	Adder adder;
 	//Constructor for the Pop-up menu
 	PopUp(Questions question, Model model, int score, int column)
 	{
@@ -37,12 +48,19 @@ public class PopUp implements ActionListener
 		_frame = new JFrame("A.S.I.A Jeopardy");
 		JPanel panel = new JPanel(new FlowLayout());
 		JPanel questionPanel = new JPanel(new GridBagLayout());
-		JButton questionButton = new JButton("<html>"+question.getQuestion()+"</html>");
-		JButton add = new JButton("Correct");
-		JButton subtract = new JButton ("Wrong");
+		
+		
+		questionButton = new JButton("<html>"+question.getQuestion()+"</html>");
+		add = new JButton("Correct");
+		subtract = new JButton ("Wrong");
 		Font font = new Font("Arial",Font.BOLD,70);
-		_model = model;
-		Adder adder = new Adder(model,score,column,this);
+		
+		this._model = model;
+		this.score = score;
+		this.column = column;
+		
+		
+		adder = new Adder(model,score,column,this);
   		Subtracter subtracter = new Subtracter(model,score,column,this);
   		Answer answer = new Answer(question.getAnswer());
 
@@ -68,7 +86,6 @@ public class PopUp implements ActionListener
 		add.setForeground(Color.WHITE);
 		add.setOpaque(true);
 		add.setPreferredSize(new Dimension(200,100));
-		add.addActionListener(adder);
 		add.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 		add.setFont(new Font("Arial",Font.BOLD,32));
 		
@@ -77,12 +94,12 @@ public class PopUp implements ActionListener
 		subtract.setForeground(Color.WHITE);
 		subtract.setOpaque(true);
 		subtract.setPreferredSize(new Dimension(200,100));
-  		subtract.addActionListener(subtracter);
+//  		subtract.addActionListener(subtracter);
 		subtract.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 		subtract.setFont(new Font("Arial",Font.BOLD,32));
   		
   		//Sets the font and size of the question
-		questionButton.addActionListener(answer);
+//		questionButton.addActionListener(answer);
 		questionButton.setFont(font);
 		questionButton.setOpaque(true);
 		questionButton.setBorder(BorderFactory.createLineBorder(Color.BLACK,0));
@@ -109,6 +126,41 @@ public class PopUp implements ActionListener
   		_frame.add(panel,BorderLayout.PAGE_END);
   		_frame.setJMenuBar(MenuBar);
   		_frame.setVisible(true);
+  		Action addAction = new AbstractAction()
+  		{
+  			@Override
+  			public void actionPerformed(ActionEvent e)
+			   {
+				  adder.actionPerformed(e); 
+			   }
+  		};
+  		add.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+  		add.getActionMap().put("Enter", addAction);
+  		add.addActionListener(addAction);
+
+  		Action subAction = new AbstractAction()
+  		{
+  			@Override
+  			public void actionPerformed(ActionEvent e)
+			   {
+				  subtracter.actionPerformed(e); 
+			   }
+  		};
+  		subtract.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "Backspace");
+  		subtract.getActionMap().put("Backspace", subAction);
+  		subtract.addActionListener(subAction);
+  		
+  		Action questionAction = new AbstractAction()
+  		{
+  			@Override
+  			public void actionPerformed(ActionEvent e)
+			   {
+				  answer.actionPerformed(e); 
+			   }
+  		};
+  		questionButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "Space");
+  		questionButton.getActionMap().put("Space", questionAction);
+  		questionButton.addActionListener(questionAction);
 	}
 	
 	//Updates the popup visually with the new team's name
@@ -139,4 +191,7 @@ public class PopUp implements ActionListener
 				break;
 		}
 	}
+
+	
+	
 }
